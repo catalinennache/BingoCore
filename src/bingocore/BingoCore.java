@@ -44,8 +44,7 @@ public class BingoCore {
         } catch (Exception e) {
         }
 
-        HttpEMT s = new HttpEMT(3000);
-        s.sendPOST();
+        
         core = new CoreConnector();
         ground = new GroundConnector();
 
@@ -78,6 +77,7 @@ public class BingoCore {
                 OutputStream os = obex.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
+                System.out.println("DONE");
 
             }
 
