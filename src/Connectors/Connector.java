@@ -5,13 +5,14 @@
  */
 package Connectors;
 
+import Interfaces.KernelProcessor;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
  *
  * @author Enache
  */
-abstract class Connector implements HttpHandler {
+abstract class Connector implements HttpHandler,KernelProcessor{
 
      protected boolean ready = false;
     protected HttpRCV Receiver;

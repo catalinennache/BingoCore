@@ -9,14 +9,19 @@ package Connectors;
  *
  * @author Enache
  */
+import Decoration.Task;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,7 +30,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-public class HttpEMT {
+public class HttpEMT implements HttpHandler {
 
     private final String USER_AGENT = "Mozilla/5.0";
     private String PORT;
@@ -35,23 +40,32 @@ public class HttpEMT {
         this.PORT = String.valueOf(PORT);
     }
 
-    public void sendPOST() throws UnsupportedEncodingException, IOException {
-        String url = "http://localhost:"+PORT;
+    public void send(Task task) throws UnsupportedEncodingException, IOException {
+        String url = "http://localhost:" + PORT;
+        String adaptedID = String.valueOf(task.getID());
+        HashMap<String, String> results = (HashMap<String, String>) task.getResults();
+
+        ArrayList<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        urlParameters.add(new BasicNameValuePair("task_id", adaptedID));
+
+        results.forEach((key, data) -> {
+            urlParameters.add(new BasicNameValuePair(key, data));
+        });
 
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
 
         post.setHeader("User-Agent", USER_AGENT);
-
-        ArrayList<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-        urlParameters.add(new BasicNameValuePair("sn", "C02G8416DRJM"));
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
         HttpResponse response = client.execute(post);
-        System.out.println("Response Code : "
-                + response.getStatusLine().getStatusCode());
+        int status_code = response.getStatusLine().getStatusCode();
 
-        BufferedReader rd = new BufferedReader(
+        if (status_code == 200) {
+            task.Finalize();
+        }
+
+        /*  BufferedReader rd = new BufferedReader(
                 new InputStreamReader(response.getEntity().getContent()));
 
         StringBuffer result = new StringBuffer();
@@ -60,7 +74,16 @@ public class HttpEMT {
             result.append(line);
         }
 
-        System.out.println(result);
+        System.out.println(result);*/
+    }
+
+    @Override
+    public void handle(HttpExchange obex) throws IOException {
+        String response = "ACK";
+        obex.sendResponseHeaders(200, response.length());
+        OutputStream os = obex.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
     }
 
 }

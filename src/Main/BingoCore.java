@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bingocore;
+package Main;
 
 import Connectors.CoreConnector;
 import Connectors.GroundConnector;
@@ -62,14 +62,16 @@ public class BingoCore {
                 core.setUpEmittor(corePort);
                 ground.setUpEmittor(groundPort);
                 JSONObject response_unprocessed = new JSONObject();
+                
                 response_unprocessed.put("1", core.getReceiverPort());
                 response_unprocessed.put("2", ground.getReceiverPort());
+                
                 String processed_response=response_unprocessed.toJSONString();
                 obex.sendResponseHeaders(200, processed_response.length());
                 OutputStream os = obex.getResponseBody();
                 os.write(processed_response.getBytes());
                 os.close();
-                
+                  System.out.println("HANDSHAEKe DONE");
 
             } else {
                 String response = "";
@@ -77,7 +79,7 @@ public class BingoCore {
                 OutputStream os = obex.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
-                System.out.println("DONE");
+              
 
             }
 
