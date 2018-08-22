@@ -80,7 +80,7 @@ public class HttpRCV implements HttpHandler {
 
     @Override
     public void handle(HttpExchange obex) throws IOException {
-       
+       if(obex.getLocalAddress().getHostName().equals("127.0.0.1")){;
         HashMap<String,String> params= this.getParameters(obex);
         String response = "ACK";
         obex.sendResponseHeaders(200, response.length());
@@ -96,6 +96,11 @@ public class HttpRCV implements HttpHandler {
         listeners.forEach((listener)->{
                 listener.process(task);
         });
+       }else{
+        obex.sendResponseHeaders(403, 0);
+        OutputStream os = obex.getResponseBody();
+        os.close();
+       }
     
     }
     

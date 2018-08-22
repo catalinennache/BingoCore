@@ -44,7 +44,6 @@ public class BingoCore {
         } catch (Exception e) {
         }
 
-        
         core = new CoreConnector();
         ground = new GroundConnector();
 
@@ -52,35 +51,40 @@ public class BingoCore {
     private static final HttpHandler resolver = new HttpHandler() {
         @Override
         public void handle(HttpExchange obex) throws IOException {
-            // HandShake_OBEX=obex;
-            System.out.println(obex);
-            if (core.isReady() && ground.isReady()) {
+           
+            if (obex.getRemoteAddress().getHostName().equals("127.0.0.1")) {
+                System.out.println(obex);
+                if (core.isReady() && ground.isReady()) {
 
-                HashMap<String, String> maskInfo = extTool.process(obex);
-                int corePort = Integer.valueOf(maskInfo.get("1"));
-                int groundPort = Integer.valueOf(maskInfo.get("2"));
-                core.setUpEmittor(corePort);
-                ground.setUpEmittor(groundPort);
-                JSONObject response_unprocessed = new JSONObject();
-                
-                response_unprocessed.put("1", core.getReceiverPort());
-                response_unprocessed.put("2", ground.getReceiverPort());
-                
-                String processed_response=response_unprocessed.toJSONString();
-                obex.sendResponseHeaders(200, processed_response.length());
-                OutputStream os = obex.getResponseBody();
-                os.write(processed_response.getBytes());
-                os.close();
-                  System.out.println("HANDSHAEKe DONE");
+                    HashMap<String, String> maskInfo = extTool.process(obex);
+                    int corePort = Integer.valueOf(maskInfo.get("1"));
+                    int groundPort = Integer.valueOf(maskInfo.get("2"));
+                    core.setUpEmittor(corePort);
+                    ground.setUpEmittor(groundPort);
+                    JSONObject response_unprocessed = new JSONObject();
 
+                    response_unprocessed.put("1", core.getReceiverPort());
+                    response_unprocessed.put("2", ground.getReceiverPort());
+
+                    String processed_response = response_unprocessed.toJSONString();
+                    obex.sendResponseHeaders(200, processed_response.length());
+                    OutputStream os = obex.getResponseBody();
+                    os.write(processed_response.getBytes());
+                    os.close();
+                    System.out.println("HANDSHAEKe DONE");
+
+                } else {
+                    String response = "";
+                    obex.sendResponseHeaders(503, response.length());
+                    OutputStream os = obex.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+
+                }
             } else {
-                String response = "";
-                obex.sendResponseHeaders(503, response.length());
+                obex.sendResponseHeaders(403, 0);
                 OutputStream os = obex.getResponseBody();
-                os.write(response.getBytes());
                 os.close();
-              
-
             }
 
         }

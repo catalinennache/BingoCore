@@ -14,33 +14,38 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import com.sun.net.httpserver.HttpExchange;
+import java.util.HashMap;
 
 public class CoreConnector extends Connector {
-
-   
 
     public CoreConnector() {
         Receiver = new HttpRCV(this);
         Receiver.start();
         Receiver.addProcessor(this);
-        ready=true;
-       
-        
+        ready = true;
+
     }
 
     @Override
     public void handle(HttpExchange obex) throws IOException {
-        
+
     }
 
     @Override
     public void process(Task task) {
-       
-        
-    
+
+        int code = task.getID();
+        HashMap<String, String> results;
+        System.out.println("Processing: "+task.toString());
+
+        switch (code) {
+            case 1: {
+                
+            }
+            break;
+        }
+
+        Emittor.send(task);
     }
-    
-   
-   
 
 }

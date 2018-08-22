@@ -40,7 +40,8 @@ public class HttpEMT implements HttpHandler {
         this.PORT = String.valueOf(PORT);
     }
 
-    public void send(Task task) throws UnsupportedEncodingException, IOException {
+    public void send(Task task) {
+      try{  
         String url = "http://localhost:" + PORT;
         String adaptedID = String.valueOf(task.getID());
         HashMap<String, String> results = (HashMap<String, String>) task.getResults();
@@ -59,9 +60,12 @@ public class HttpEMT implements HttpHandler {
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
         HttpResponse response = client.execute(post);
+        System.out.println("Task: "+task.getID()+" test");
+        
         int status_code = response.getStatusLine().getStatusCode();
 
         if (status_code == 200) {
+            System.out.println("Task finalized@"+task.getID());
             task.Finalize();
         }
 
@@ -75,6 +79,9 @@ public class HttpEMT implements HttpHandler {
         }
 
         System.out.println(result);*/
+      }catch(Exception e){
+          e.printStackTrace();
+      }
     }
 
     @Override
