@@ -80,27 +80,34 @@ public class HttpRCV implements HttpHandler {
 
     @Override
     public void handle(HttpExchange obex) throws IOException {
-       if(obex.getLocalAddress().getHostName().equals("127.0.0.1")){;
+       //if(obex.getLocalAddress().getHostName().equals("127.0.0.1")){;
         HashMap<String,String> params= this.getParameters(obex);
-        String response = "ACK";
-        obex.sendResponseHeaders(200, response.length());
+       
+        obex.sendResponseHeaders(200, 0);
         OutputStream os = obex.getResponseBody();
-        os.write(response.getBytes());
+      
         os.close();
-        
+        System.out.println(params);
         int code=Integer.valueOf(params.get("code"));
+        System.out.println(code);
         params.remove("code");
-        int id=Integer.valueOf(params.get("task_id"));
-        params.remove("task_id");
-        Task task= Task.createTask(code,id,params);
+        int id=Integer.valueOf(params.get("id"));
+        params.remove("id");
+        System.out.println(id);
+        System.out.println(params);
+        Task task;
+       try{  task= Task.createTask(code,id,params); 
+        System.out.println("TASK CREATED");
         listeners.forEach((listener)->{
+                System.out.println("PRocessing task");
                 listener.process(task);
         });
-       }else{
-        obex.sendResponseHeaders(403, 0);
-        OutputStream os = obex.getResponseBody();
-        os.close();
-       }
+        } catch(Exception e) {e.printStackTrace(); }
+     //  }else{
+     //   obex.sendResponseHeaders(403, 0);
+     //   OutputStream os = obex.getResponseBody();
+      //  os.close();
+     //  }
     
     }
     

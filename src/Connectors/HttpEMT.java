@@ -12,14 +12,8 @@ package Connectors;
 import Decoration.Task;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.apache.http.HttpResponse;
@@ -38,6 +32,42 @@ public class HttpEMT implements HttpHandler {
     public HttpEMT(int PORT) {
 
         this.PORT = String.valueOf(PORT);
+       // this.testConnection();
+    }
+    
+    public void testConnection(){
+    new Thread(()->{
+    int tests=5;
+    
+    for(int i=0;i<tests;i++)
+       {
+           try{  
+        String url = "http://localhost:" + PORT;
+        String adaptedID = "TEST";
+        
+
+        ArrayList<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        urlParameters.add(new BasicNameValuePair("task_id", adaptedID));
+
+       
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(url);
+
+        post.setHeader("User-Agent", USER_AGENT);
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+        HttpResponse response = client.execute(post);
+        System.out.println("TEST FIRED");
+           Thread.sleep(2000);
+           }
+        
+           catch(Exception e){
+           
+           }
+           
+       }}).start();
+    
     }
 
     public void send(Task task) {

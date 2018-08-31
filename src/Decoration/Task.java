@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class Task {
 
-    private static ArrayList<Task> openTasks;
+    private static ArrayList<Task> openTasks = new ArrayList<>();
 
     protected int task_code = -1;
     protected int task_id = -1;
@@ -23,8 +23,9 @@ public class Task {
     protected Map<String, String> task_result = null;
     protected boolean finalized = false;
 
-    private Task(int code, HashMap<String, String> param) {
+    private Task(int code,int id, HashMap<String, String> param) {
         this.task_code = code;
+        task_id=id;
         this.parameters = param;
 
     }
@@ -82,9 +83,9 @@ public class Task {
         }
 
         if (reusable_task == null) {
-            reusable_task = new Task(code, param);
+            reusable_task = new Task(code,id, param);
             openTasks.add(reusable_task);
-
+            
         }
 
         return reusable_task;

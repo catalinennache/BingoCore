@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import org.json.simple.JSONObject;
 
 /**
@@ -46,16 +49,19 @@ public class BingoCore {
 
         core = new CoreConnector();
         ground = new GroundConnector();
+	}
 
-    }
+    
+    
     private static final HttpHandler resolver = new HttpHandler() {
         @Override
         public void handle(HttpExchange obex) throws IOException {
            
             if (obex.getRemoteAddress().getHostName().equals("127.0.0.1")) {
                 System.out.println(obex);
+                System.out.println("check");
                 if (core.isReady() && ground.isReady()) {
-
+                    System.out.println("check");
                     HashMap<String, String> maskInfo = extTool.process(obex);
                     int corePort = Integer.valueOf(maskInfo.get("1"));
                     int groundPort = Integer.valueOf(maskInfo.get("2"));
