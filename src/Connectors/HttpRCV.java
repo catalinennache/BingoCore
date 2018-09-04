@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +73,8 @@ public class HttpRCV implements HttpHandler {
             String[] keyValue = keyValuePair.split("=");
             if (keyValue.length != 2) {
                 continue;
-            }
-            parameters.put(keyValue[0], keyValue[1]);
+            }  
+            parameters.put(keyValue[0], URLDecoder.decode(keyValue[1],"UTF-8"));
         }
         return parameters;
     }

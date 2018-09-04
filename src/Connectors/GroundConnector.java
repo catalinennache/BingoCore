@@ -75,7 +75,7 @@ public class GroundConnector extends Connector {
                 case 2: {
                     HashMap<String, String> hash = new HashMap<>();
                     HashMap<String, String> givenParams = (HashMap<String, String>) task.getParams();
-                    int isOK = this.Register(givenParams.get("email"), givenParams.get("pass"), givenParams.get("confirm"));
+                    String isOK = this.Register(givenParams.get("nickname"),givenParams.get("email"), givenParams.get("password"), givenParams.get("passconf"));
 
                     hash.put("ok", String.valueOf(isOK));
 
@@ -83,6 +83,16 @@ public class GroundConnector extends Connector {
 
                 }
                 break;
+                
+                case 3:{
+                    
+                    HashMap<String, String> hash = new HashMap<>();
+                    HashMap<String, String> givenParams = (HashMap<String, String>) task.getParams();
+                    int isOk = this.checkNickName(givenParams.get("nickname"));
+                    hash.put("ok", String.valueOf(isOk));
+                    task.setResults(hash);
+                    
+                }break;
             }
 
             Emittor.send(task);
@@ -95,7 +105,7 @@ public class GroundConnector extends Connector {
 
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT * FROM customers WHERE email= 'catalinenache03@gmail.com" + "' AND password = '" + password + "'";
+        sql = "SELECT * FROM customers WHERE email= '"+email + "' AND password = '" + password + "'";
         ResultSet rs = stmt.executeQuery(sql);
         boolean exists = rs.first();
         String response="";
@@ -109,25 +119,50 @@ public class GroundConnector extends Connector {
 
     ;
     
-    private int Register(String email, String password, String confirmPass) {
+    private String Register(String nickname,String email, String password, String confirmPass) {
+         String user_token = this.genToken(16);
         try {
+           
             Statement stmt = conn.createStatement();
             String sql;
-            sql = "SELECT * FROM Users WHERE email= '" + email + "' AND pass = '" + password + "'";
+            sql = "SELECT * FROM customers WHERE email= '" + email + "' AND pass = '" + password + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if (!rs.first()) {
 
                 stmt = conn.createStatement();
-                sql = "INSERT INTO Users "
-                        + "VALUES ('" + email + "', '" + password + "' , '" + confirmPass + "'";
+                sql = "INSERT INTO customers "
+                        + "VALUES ('" + email + "', '" + password + "' , '" + user_token+"'";
                 stmt.executeUpdate(sql);
+
+            }
+
+        } catch (Exception e) {
+            return String.valueOf(0);
+        }
+        
+        return nickname+"<>"+user_token;
+    }
+    
+    private int checkNickName(String nickName){
+        
+          try {
+           
+            Statement stmt = conn.createStatement();
+            String sql;
+            sql = "SELECT * FROM customers WHERE nickname= '" + nickName + "'";
+            ResultSet rs = stmt.executeQuery(sql);
+            if (!rs.first()) {
+
+                    return 1;
+             
 
             }
 
         } catch (Exception e) {
             return 0;
         }
-        return 1;
-    }
-
+        
+         return 0; 
+        
+    }  
 }
