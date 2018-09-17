@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import org.json.simple.JSONObject;
 
 public class CoreConnector extends Connector {
 
@@ -49,16 +50,81 @@ public class CoreConnector extends Connector {
 
         switch (code) {
             case 1: {
-                HashMap<String, String> params = this.generateTicket();
-                task.setResults(params);
+                Solution.Node[] nodes  = this.generateTicket();
+                String token= this.genToken(32);
+                 HashMap<String,String> ticket = new HashMap<>();
+                 ticket.put("token", token);
+		//print the tickets
+		for(int i=0;i<1;i++){
+			Solution.Node currTicket = nodes[i];
+			
+			for(int r=0;r<3;r++){
+				for(int col=0;col<9;col++){
+					int num = currTicket.A[r][col];
+					if(num!=0) {System.out.print(num);
+                                         
+                                        }
+                                        ticket.put( String.valueOf(r)+String.valueOf(col), String.valueOf(num));
+					
+					if(col!=8) System.out.print(",");
+				}
+				if(r!=2) System.out.println();
+			}
+			
+			if(i!=5){
+				System.out.println();
+				System.out.println();
+				System.out.println();
+			}
+		}
+               
+         
+         
+                task.setResults(ticket);
             }
             break;
+            case 2: {
+                 Solution.Node[] nodes = this.generateTicket();
+                 HashMap<String,String> hash = new HashMap<>();
+                 String token= this.genToken(32);
+                 hash.put("pack_token", token);
+                 
+		//print the tickets
+		for(int i=0;i<6;i++){
+                    token = this.genToken(16);
+                      JSONObject ticket = new JSONObject();
+                       ticket.put("token", token);
+			Solution.Node currTicket = nodes[i];
+			
+			for(int r=0;r<3;r++){
+				for(int col=0;col<9;col++){
+					int num = currTicket.A[r][col];
+					if(num!=0) {System.out.print(num);
+                                         
+                                        }
+                                        ticket.put( String.valueOf(r)+String.valueOf(col), String.valueOf(num));
+					
+					if(col!=8) System.out.print(",");
+				}
+				if(r!=2) System.out.println();
+			}
+			hash.put(String.valueOf(i), ticket.toJSONString());
+			if(i!=5){
+				System.out.println();
+				System.out.println();
+				System.out.println();
+			}
+		}
+               
+         
+                task.setResults(hash);
+            }break;
         }
 
         Emittor.send(task);
     }
 
-    private HashMap<String, String> generateTicket() {
+    private Solution.Node[] generateTicket() {
        
         Solution.Node []nodes = new Solution.Node[6];
 		for(int i=0;i<6;i++){
@@ -275,36 +341,8 @@ public class CoreConnector extends Connector {
 			}		
 		}
 		 
-                 String token= this.genToken(64);
-                 HashMap<String,String> ticket = new HashMap<>();
-                 ticket.put("token", token);
-		//print the tickets
-		for(int i=0;i<1;i++){
-			Solution.Node currTicket = nodes[i];
-			
-			for(int r=0;r<3;r++){
-				for(int col=0;col<9;col++){
-					int num = currTicket.A[r][col];
-					if(num!=0) {System.out.print(num);
-                                         
-                                        }
-                                        ticket.put( String.valueOf(r)+String.valueOf(col), String.valueOf(num));
-					
-					if(col!=8) System.out.print(",");
-				}
-				if(r!=2) System.out.println();
-			}
-			
-			if(i!=5){
-				System.out.println();
-				System.out.println();
-				System.out.println();
-			}
-		}
-               
-         
-         
+                 
 
-        return ticket;
+        return nodes;
     }
 }

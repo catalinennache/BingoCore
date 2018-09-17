@@ -35,8 +35,11 @@ public class BingoCore {
     private static CoreConnector core;
     private static GroundConnector ground;
     private static HttpEMT Provisional_EMT;
+    private static boolean Firewall_ON = false;
 
     public static void main(String[] args) throws Exception {
+
+        
 
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(35300), 0);
@@ -49,15 +52,13 @@ public class BingoCore {
 
         core = new CoreConnector();
         ground = new GroundConnector();
-	}
+    }
 
-    
-    
     private static final HttpHandler resolver = new HttpHandler() {
         @Override
         public void handle(HttpExchange obex) throws IOException {
-           
-            if (obex.getRemoteAddress().getHostName().equals("127.0.0.1")) {
+
+            if (obex.getRemoteAddress().getHostName().equals("127.0.0.1") || !BingoCore.Firewall_ON) {
                 System.out.println(obex);
                 System.out.println("check");
                 if (core.isReady() && ground.isReady()) {
@@ -120,4 +121,29 @@ public class BingoCore {
         return parameters;
 
     };
+
+    public static void firewall_setup(String param) throws Exception {
+        if (true) {
+            throw new Exception("Unsupported yet !!");
+        } else {
+
+            {
+                String firewall = param;
+                if (firewall == null) {
+                    System.out.println("Firewall parameter undetected.\n***** Feature releases will terminate the process with a code 0 ****\nDefault is off.\n");
+                } else if (firewall.toLowerCase().trim().equals("enabled")) {
+                    Firewall_ON = true;
+                    System.out.println("Firewall Enabled!\n **** Note: without an Internet connection  ");
+                } else if (firewall.toLowerCase().trim().equals("disabled")) {
+                    System.out.println("Firewall is currently disabled");
+                } else {
+                }
+            }
+        }
+    }
+
+    private static void checkConnection() throws Exception {
+        throw new Exception("Unsupported yet!!");
+    }
+
 }

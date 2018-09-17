@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -77,7 +79,7 @@ public class GroundConnector extends Connector {
                     HashMap<String, String> givenParams = (HashMap<String, String>) task.getParams();
                     String isOK = this.Register(givenParams.get("nickname"),givenParams.get("email"), givenParams.get("password"), givenParams.get("passconf"));
 
-                    hash.put("ok", String.valueOf(isOK));
+                    hash.put("response", String.valueOf(isOK));
 
                     task.setResults(hash);
 
@@ -125,18 +127,20 @@ public class GroundConnector extends Connector {
            
             Statement stmt = conn.createStatement();
             String sql;
-            sql = "SELECT * FROM customers WHERE email= '" + email + "' AND pass = '" + password + "'";
+            sql = "SELECT * FROM customers WHERE email= '" + email + "' AND password = '" + password + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if (!rs.first()) {
 
                 stmt = conn.createStatement();
-                sql = "INSERT INTO customers "
-                        + "VALUES ('" + email + "', '" + password + "' , '" + user_token+"'";
+                sql = "INSERT INTO customers (nickname,email,password,token)"
+                        + "VALUES ('"+nickname +"','" + email + "', '" + password + "' " +",'" + user_token+"')";
+                System.out.println(sql+"\n");
                 stmt.executeUpdate(sql);
 
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             return String.valueOf(0);
         }
         
