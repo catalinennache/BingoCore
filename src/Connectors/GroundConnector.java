@@ -33,7 +33,7 @@ public class GroundConnector extends Connector {
     private Random genTool = new Random();
 
     public GroundConnector() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
 
         //STEP 3: Open a connection
         System.out.println("Connecting to database...");
