@@ -45,7 +45,7 @@ public class BingoCore {
         if(domain.equals("dev"))
             {
              domain = "86.123.134.100";
-             password = "Ionut@)!)";
+             password = "rionut01";
             }   
         
         
