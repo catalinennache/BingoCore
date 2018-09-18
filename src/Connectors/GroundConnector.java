@@ -6,6 +6,7 @@
 package Connectors;
 
 import Decoration.Task;
+import Main.BingoCore;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,8 +28,8 @@ public class GroundConnector extends Connector {
 
     private Connection conn;
     private String USER = "root";
-    private String PASS = "";
-    private String DB_URL = "jdbc:mysql://localhost:3306/bingo";
+    private String PASS = BingoCore.password;
+    private String DB_URL = "jdbc:mysql://"+BingoCore.domain+":3306/bingo";
     private Random genTool = new Random();
 
     public GroundConnector() throws ClassNotFoundException, SQLException {

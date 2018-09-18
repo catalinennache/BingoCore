@@ -36,11 +36,19 @@ public class BingoCore {
     private static GroundConnector ground;
     private static HttpEMT Provisional_EMT;
     private static boolean Firewall_ON = false;
+    public  static String domain;
+    public  static String password="";
 
     public static void main(String[] args) throws Exception {
-
         
-
+        domain = System.getProperty("domain");
+        if(domain.equals("dev"))
+            {
+             domain = "86.123.134.100";
+             password = "Ionut@)!)";
+            }   
+        
+        
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(35300), 0);
             server.createContext("/", resolver);
